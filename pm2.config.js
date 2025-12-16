@@ -1,9 +1,9 @@
-const grab = process.env.SITE
-  ? `npx tsx scripts/commands/epg/grab.ts --site=${process.env.SITE} ${process.env.CLANG ? `--lang=${process.env.CLANG}` : ''
-  } --output=public/guide.xml`
-  : 'npx tsx scripts/commands/epg/grab.ts --channels=channels.xml --output=public/guide.xml'
+const { env } = require("pm2");
 
-const cron = 'npx tsx scripts/commands/epg/cron.ts'
+const grab = process.env.SITE
+  ? `npm run grab -- --site=${process.env.SITE} ${process.env.CLANG ? `--lang=${process.env.CLANG}` : ''
+  } --output=public/guide.xml`
+  : 'npm run grab -- --channels=channels.xml --output=public/guide.xml'
 
 
 const apps = [
@@ -16,7 +16,7 @@ const apps = [
   },
   {
     name: 'cron',
-    script: cron,
+    script: `npm run cron`,
     instances: 1,
     watch: false,
     autorestart: true,
