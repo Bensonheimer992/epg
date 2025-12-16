@@ -1,7 +1,9 @@
 const grab = process.env.SITE
-  ? `npm run grab -- --site=${process.env.SITE} ${process.env.CLANG ? `--lang=${process.env.CLANG}` : ''
+  ? `npx tsx scripts/commands/epg/grab.ts --site=${process.env.SITE} ${process.env.CLANG ? `--lang=${process.env.CLANG}` : ''
   } --output=public/guide.xml`
-  : 'npm run grab -- --channels=channels.xml --output=public/guide.xml'
+  : 'npx tsx scripts/commands/epg/grab.ts --channels=channels.xml --output=public/guide.xml'
+
+const cron = 'npx tsx scripts/commands/epg/cron.ts'
 
 
 const apps = [
@@ -13,11 +15,16 @@ const apps = [
     autorestart: true
   },
   {
-    name: 'grab',
-    script: `npx chronos -e "${grab}" -p "${process.env.CRON_SCHEDULE}" -l`,
+    name: 'cron',
+    script: cron,
     instances: 1,
     watch: false,
-    autorestart: true
+    autorestart: true,
+    env: {
+      CRON_SCHEDULE: process.env.CRON_SCHEDULE,
+      GRAB: grab,
+      TZ: process.env.TZ
+    }
   }
 ];
 
